@@ -15,4 +15,8 @@ class IndexController extends BaseController {
 		header('Access-Control-Allow-Headers:x-requested-with, echodata-token, content-type');
 		return '233';
 	}
+
+	public function info() {
+		phpinfo();
+	}
 }

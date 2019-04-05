@@ -13,12 +13,13 @@ use Illuminate\Http\Request;
 |
 */
 Route::group(['namespace' => 'Api'], function() {
-	Route::any('/test', 'IndexController@test');
+	Route::any('/itest', 'IndexController@test');
 });
 
 Route::group(['namespace' => 'Api'], function() {
 
 	Route::get('/', 'IndexController@index');
+	Route::get('/info', 'IndexController@info');
 	Route::get('/sms/send', 'SmsController@send');
 	Route::get('/sms/verify', 'SmsController@verify');
 
@@ -28,6 +29,7 @@ Route::group(['namespace' => 'Api'], function() {
 });
 
 Route::group(['namespace' => 'Api', 'middleware' => ['auth.token']], function() {
+	Route::resource('/test', 'TestController');
 
 	Route::post('/user/logout', 'UserController@logout');
 	Route::post('/user/forgetPass', 'UserController@forgetPass');
@@ -36,6 +38,6 @@ Route::group(['namespace' => 'Api', 'middleware' => ['auth.token']], function() 
 	Route::post('/user/resetPass', 'UserController@resetPass');
 
 	Route::resources([
-		'users'	 => 'UserController',
+		'user'	 => 'UserController',
 	]);
 });

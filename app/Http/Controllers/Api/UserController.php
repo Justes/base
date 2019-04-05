@@ -8,6 +8,10 @@ use App\Models\Sms;
 
 class UserController extends BaseController {
 
+	public function index() {
+		return err(0);
+	}
+
 	// 注册
 	public function reg(Request $req) {
 		$this->required($req, ['username', 'password', 'code']);

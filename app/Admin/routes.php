@@ -18,7 +18,6 @@ Route::group([
 	$router->resource('apis', ApiController::class);
 
 	$router->resource('users', UserController::class);
-	$router->resource('devices', DeviceController::class);
 	$router->resource('groups', GroupController::class);
 
 });
