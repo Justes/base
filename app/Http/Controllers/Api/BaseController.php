@@ -58,24 +58,20 @@ class BaseController extends Controller {
 		return $this->model = $model;
 	}
 
-	public function rules($req, $valid, $exit=1) {
+	public function rules($req, $valid) {
 		$validator = Validator::make($req->all(), $valid);
 		if($validator->fails()) {
-			if($exit) {
-				err(2, $validator->errors()->all(), '', 1);
-			} else {
-				return false;
-			}
+			return $validator->errors()->all();
 		}
-		return true;
+		return false;
 	}
 
-	public function required($req, $valid, $exit=1) {
+	public function required($req, $valid) {
 		$v = [];
 		foreach($valid as $item) {
 			$v[$item] = 'required';
 		}
-		return $this->rules($req, $v, $exit);
+		return $this->rules($req, $v);
 	}
 
 	public function content($req) {

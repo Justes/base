@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-use App\Helpers\Utils;
+use App\Http\Common\Utils;
 use Illuminate\Http\Request;
 
 class SmsController extends BaseController {
