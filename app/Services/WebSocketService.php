@@ -22,7 +22,7 @@ class WebSocketService implements WebSocketHandlerInterface {
 		$data = json_decode($frame->data, true);
 		if(isset($data['open'])) {
 			app('swoole')->wsTable->set($data['usercode'], ['value' => $frame->fd]);
-			app('swoole')->wsTable->set('fd:' . $data['fd'], ['value' => $data['usercode']]);
+			app('swoole')->wsTable->set('fd:' . $frame->fd, ['value' => $data['usercode']]);
 			User::where('usercode', $data['usercode'])->update(['fd' => $frame->fd]);
 		} else {
 			$usercode = app('swoole')->wsTable->get('fd:' . $fd);
