@@ -22,20 +22,22 @@ class WebSocketService implements WebSocketHandlerInterface {
 		$data = json_decode($frame->data, true);
 		$fd = $frame->fd;
 		if(isset($data['open'])) {
-			app('swoole')->wsTable->set($data['usercode'], ['value' => $fd]);
-			app('swoole')->wsTable->set('fd:' . $fd, ['value' => $data['usercode']]);
-			User::where('usercode', $data['usercode'])->update(['fd' => $fd]);
+			$user = User::where('token', $data['token'])->first();
+			app('swoole')->wsTable->set('uid:' . $user->id, ['value' => $fd]);
+			app('swoole')->wsTable->set('fd:' . $fd, ['value' => $user->id]);
+			$user->fd = $fd;
+			$user->save();
 		} else {
-			$usercode = app('swoole')->wsTable->get('fd:' . $fd);
+			$userId = app('swoole')->wsTable->get('fd:' . $fd);
 			$v = $data;
-			$v['from_usercode'] = $w['usercode'] = $usercode['value'];
-			$w['friendcode'] = $data['to_usercode'];
+			$v['from_uid'] = $w['user_id'] = $userId['value'];
+			$w['friend_id'] = $data['to_uid'];
 
 			$row = UserFriend::where($w)->first();
 			if($row) {
-				$to = app('swoole')->wsTable->get($data['to_usercode']);
+				$to = app('swoole')->wsTable->get('uid:'.$data['to_uid']);
 				if($to !== false) {
-					$server->push($to['value'], $data['message']);
+					$server->push($to['value'], $data['msg']);
 					$v['send'] = 1;
 				}
 				Message::create($v);
@@ -44,9 +46,9 @@ class WebSocketService implements WebSocketHandlerInterface {
 	}
 
 	public function onClose(Server $server, $fd, $reactorId) {
-		$usercode = app('swoole')->wsTable->get('fd:' . $fd);
-		if($usercode !== false) {
-			app('swoole')->wsTable->del($usercode['value']);
+		$userId = app('swoole')->wsTable->get('fd:' . $fd);
+		if($userId !== false) {
+			app('swoole')->wsTable->del('uid:' . $userId['value']);
 		}
 		app('swoole')->wsTable->del('fd:' . $fd);
 		User::where('fd', $fd)->update(['fd' => 0]);

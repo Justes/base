@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Im;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Api\BaseController;
-use App\Models\User;
 
 class UserController extends BaseController {
 
@@ -37,18 +36,17 @@ class UserController extends BaseController {
 		$user = $this->checkUser($req->username);
 		if($user) {
 			if(Hash::check($req->password, $user->password)) {
-				return err(0, ['usercode' => $user->usercode]);
+				$token = $this->loginInfo($req, $user);
+				return err(0, ['token' => $token]);
 			} else {
 				return err(4101);
 			}
 		} else {
 			$user = new User();
-			$user->plt = 0;
 			$user->username = $req->username;
 			$user->password = bcrypt($req->password);
-			$user->usercode = md5(uniqid().time());
-			$user->save();
-			return err(0, ['usercode' => $user->usercode]);
+			$token = $this->loginInfo($req, $user);
+			return err(0, ['token' => $token]);
 		}
 	}
 
