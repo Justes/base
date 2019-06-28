@@ -2,5 +2,5 @@
 
 namespace App\Models;
 
-class Sms extends BaseModel {
+class UserFriend extends BaseModel {
 }
