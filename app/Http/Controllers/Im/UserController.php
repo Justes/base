@@ -43,6 +43,7 @@ class UserController extends BaseController {
 			}
 		} else {
 			$user = new User();
+			$user->plt = 0;
 			$user->username = $req->username;
 			$user->password = bcrypt($req->password);
 			$user->usercode = md5(uniqid().time());
