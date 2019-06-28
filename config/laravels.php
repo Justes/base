@@ -39,14 +39,12 @@ return [
     ],
     'events'                   => [],
 	'swoole_tables'            => [
-		/*
 		'ws' => [
 			'size' => 102400,
 			'column' => [
 				['name' => 'value', 'type' => \Swoole\Table::TYPE_INT, 'size' => 8],
 			],
 		]
-		 */
 	],
     'register_providers'       => [],
     'cleaners'                 => [
