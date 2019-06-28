@@ -26,11 +26,12 @@ class WebSocketService implements WebSocketHandlerInterface {
 			User::where('usercode', $data['usercode'])->update(['fd' => $frame->fd]);
 		} else {
 			$usercode = app('swoole')->wsTable->get('fd:' . $fd);
-			$v['from_usercode'] = $usercode['value'];
-			$v['to_usercode'] = $data['to_usercode'];
-			$relation = UserFriend::where($v)->first();
-			if($relation) {
-				$v['message'] = $data['message'];
+			$v = $data;
+			$v['from_usercode'] = $w['usercode'] = $usercode['value'];
+			$w['friendcode'] = $data['to_usercode'];
+
+			$row = UserFriend::where($w)->first();
+			if($row) {
 				$to = app('swoole')->wsTable->get($data['to_usercode']);
 				if($to !== false) {
 					$server->push($to['value'], $data['message']);
