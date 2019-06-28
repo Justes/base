@@ -20,10 +20,11 @@ class WebSocketService implements WebSocketHandlerInterface {
 
 	public function onMessage(Server $server, Frame $frame) {
 		$data = json_decode($frame->data, true);
+		$fd = $frame->fd;
 		if(isset($data['open'])) {
-			app('swoole')->wsTable->set($data['usercode'], ['value' => $frame->fd]);
-			app('swoole')->wsTable->set('fd:' . $frame->fd, ['value' => $data['usercode']]);
-			User::where('usercode', $data['usercode'])->update(['fd' => $frame->fd]);
+			app('swoole')->wsTable->set($data['usercode'], ['value' => $fd]);
+			app('swoole')->wsTable->set('fd:' . $fd, ['value' => $data['usercode']]);
+			User::where('usercode', $data['usercode'])->update(['fd' => $fd]);
 		} else {
 			$usercode = app('swoole')->wsTable->get('fd:' . $fd);
 			$v = $data;
