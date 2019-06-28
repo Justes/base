@@ -39,6 +39,7 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->mapWebRoutes();
 
+        $this->mapImRoutes();
         //
     }
 
@@ -70,4 +71,10 @@ class RouteServiceProvider extends ServiceProvider
              ->namespace($this->namespace)
              ->group(base_path('routes/api.php'));
     }
+
+	protected function mapImRoutes() {
+        Route::prefix('im')
+             ->namespace($this->namespace)
+             ->group(base_path('routes/im.php'));
+	}
 }

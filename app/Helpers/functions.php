@@ -30,12 +30,12 @@ if(!function_exists('writeLog')) {
 
 if(!function_exists('err')) {
 	function err($errcode=0, $data='', $message='') {
-		$lang = request('l', 'en');
+		$lang = request('l', 'cn');
 		$err = config('errcode_'.$lang);
 
 		$message = empty($message) ? $err[$errcode] : $message;
 		$arr = [
-			'errcode' => $errcode,
+			'code' => $errcode,
 			'message'	=> $message,
 			'data' => $data
 		];

@@ -9,9 +9,6 @@ use Illuminate\Support\Facades\Redis;
 use Illuminate\Http\Request;
 use Validator;
 use Exception;
-use App\Models\App;
-use App\Models\Api;
-use App\Models\Setting;
 use App\Models\User;
 
 class BaseController extends Controller {

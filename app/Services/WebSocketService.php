@@ -5,6 +5,7 @@ use Hhxsv5\LaravelS\Swoole\WebSocketHandlerInterface;
 use Swoole\Http\Request;
 use Swoole\WebSocket\Frame;
 use Swoole\WebSocket\Server;
+use App\Models\User;
 
 class WebSocketService implements WebSocketHandlerInterface {
 
@@ -12,13 +13,25 @@ class WebSocketService implements WebSocketHandlerInterface {
 	}
 
 	public function onOpen(Server $server, Request $request) {
-		$server->push($request->fd, 'Welcome to las');
+		$server->push($request->fd, 'Welcome to webim');
 	}
 
 	public function onMessage(Server $server, Frame $frame) {
-		$server->push($frame->fd, date('Y-m-d H:i:s'));
+		$data = $frame->data;
+		if(isset($data['open'])) {
+			app('swoole')->wsTable->set($data['usercode'], ['value' => $frame->fd]);
+			app('swoole')->wsTable->set('fd:'$data['fd'], ['value' => $data['usercode']]);
+			User::where('usercode', $data['usercode'])->update(['fd' => $frame->fd]);
+		}
+		$server->push($frame->fd, $frame->data);
 	}
 
 	public function onClose(Server $server, $fd, $reactorId) {
+		$usercode = app('swoole')->wsTable->get('fd:' . $fd);
+		if($usercode !== false) {
+			app('swoole')->wsTable->del($usercode['value']);
+		}
+		app('swoole')->wsTable->del('fd:' . $fd);
+		User::where('fd', $fd)->update(['fd' => 0]);
 	}
 }

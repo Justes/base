@@ -38,7 +38,16 @@ return [
         'max_wait_time' => 5,
     ],
     'events'                   => [],
-    'swoole_tables'            => [],
+	'swoole_tables'            => [
+		/*
+		'ws' => [
+			'size' => 102400,
+			'column' => [
+				['name' => 'value', 'type' => \Swoole\Table::TYPE_INT, 'size' => 8],
+			],
+		]
+		 */
+	],
     'register_providers'       => [],
     'cleaners'                 => [
         //Hhxsv5\LaravelS\Illuminate\Cleaners\SessionCleaner::class, // If you use the session/authentication in your project, please uncomment this line
